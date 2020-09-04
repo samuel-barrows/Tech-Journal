@@ -1,0 +1,129 @@
+#+TITLE: Network Protocols
+
+* Internet of Strings
+** Two parties connected by a string and each have a pad and a piece of paper. How do they communicate?
+   * The two parties could send a note on the string to each other. 
+   * Provide some information. But you don't need a ton of metadata to send it to just one person on the string
+   * Multiple people on the end of the strings would require more metadata, saying who you are and who the message is intended for.
+   * Each party might want to use a different way of messaging. Different methods of communication over the same link. This info could be provided at the top somewhere.
+   * Sending large info across the string would require you to send a small amount of data at a time. Break up the message. The person on the other end will need to reassemble the message. There has to be some kind of method to do that.
+** Three Parties: How do they communicate?
+   * Specify the group in the middle to pass it along to the next group.
+   * The middle group doesn't need to know everything about the other group, they just need to know what messages to send to them for them to organize.
+   * You might need to use encryption if you don't want the middle group to be able to read the message. You may also want to make sure the message is delivered safely and untampered.
+   * You may need to consider things like distance, speed, amount of data, integrity, redundance, etc. These are things to consider when dealing with network protocols.
+
+* Postal mail analogy vs. Sending a Packet
+- Address is like an IP address. 
+  - DNS is like a phone book that finds all the addresses of that you need
+- Post Office is like the local router
+- Zip code is like the network part of an IP address.
+- Routing list is like a routing table
+  - They know the next hop, not the full route
+- Mail Carrier delivers to the recipient using the street address 
+  - Uses host part of IP address and MAC address to send to the machine on the local router 
+
+* Network Protocols 
+- Defines rules and convention for communication between network devices. 
+  - Mechanisms for devices to identify and make connections with each other
+  - Rules for how packages are sent and recieved
+- One universal protocol for all data is inefficient 
+  - What happens if we move to wireless from wired? Now wee need to alter to support wireless as well. 
+    Bloated
+  - Network devs developed modular protocols that focus on certain specific aspects
+- Use several protocols in a single session.
+  - Might use HTTP which is built on TCP which is built on IP, etc. 
+  - Depends on the layer. Each layer could use a specific protocol
+- Protocols are used in layers to manage the complexities 
+  - One universal protocol has to know everything. Dividing up to layers helps us concentrate on a specific part of communication at a time.
+- Types of layerd models
+  - Protocol Model:
+    Specify specific protocols. TCP/IP uses TCP/IP
+  - Refrence Model:
+    OSI model for example. Ambiguous. 
+  - OSI Model has 7 layers while the TCP/IP combines the last 4 layers. Web traffic is focused on Application.
+    Sometimes TCP has two physical layers, splitting data link and physical. 
+- Protocol Suite:
+  - Specific set of protocols that work together. TCP/IP, bluetooth
+- Layering model:
+  - Helps manage system complexity for protocol designers and implementers.
+  - Only have to focus on specific steps at each layer
+  - Assists in protocol design. Only have to focus on a single layer when working on a specific protocol
+  - Provides a common language and fosters competition/collaboration
+  - Most common models are the OSI model and the TCP/IP model
+- Networking Models:
+  - Protocol Model:
+    - Model closely matches the structure of a particular protocol suite.
+  - Refrence Model:
+    - An ambiguous structure such as the OSI model
+* OSI Model
+- Network protocol framework in 7 layers that define how data can travel between computers
+  1. Physical
+     * How we are sending bits over media. Wires, fiber optic, radio waves, etc.
+     * How bits are sent between nodes
+       * Radio frequency, etc
+  2. Datalink
+     * Direct addressing, MAC addresses, how does traffic travel, prevent clashing, etc.
+     * Giving the letter to the post office, for the letter analogy
+     * Node to node data transfer from two connected nodes
+       * Network card to another network card.
+       * MAC addresses
+  3. Network
+     * IP addresses of sender/reciever
+     * How communication actually happens
+       * Logical addressing system (IP addressing)
+       * How packets are routed and forwarded
+  4. Transport
+     * Multiplex traffic on computers and what kind of ports we are using.
+     * Port 80 deals with HTTP traffic
+     * Port 443 deals with HTTPS traffic
+     * Where or what program on thee machine sends the data
+       * Make sure all the data is recieved in the correct order
+  5. Session
+     * Session set up and teardown
+     * TCP uses handshakes to establish connections. This kind of like layer 5 work (? maybe??)
+     * Setup and Termination of a connection between applications.
+       * How long we wait for a response, how to setup a connection, etc
+  6. Presentation
+     * Compression, enctyption, other encoding
+     * What kind of code is it using? etc
+     * "Presents" data for the application or the network
+       * Encryption/decryption or compression. Encoding.
+  7. Application
+     * Data that we are sending to destination device.
+     * Body of the letter if we want to use the letter analogy
+     * Closest to the user
+       * protocols for file transfer, email, web browsing
+- This goes up the layer (generally is listed 7 down) 
+- Encapsulation: 
+      Wrapping data in the application process and adding headers that specify what to do at each layer.
+- Data might go up and down layer 3-1 a few times as it hits a few routers
+- This model gives up a nice visual represnentation on how networking is supposed to work
+- Helps troubleshoot
+- Helps developers work on developing certain programs
+- Advertisement to how a program works 
+- Please Do Not Throw Sausage Pizza Away
+
+* Wireshark
+- Software to capture packets on a certain network device and network
+- Top will show all the packets captured and some basic details. Clicking will show more data about headers in the middle window
+  - The top window can add filters and ways to make it easier to parse through the data and find what you are looking for.
+- No specific layer 1 header, but the same info can be found in the Frame header 
+- Bottom will show the data of that packet based on the headers
+  - You can see the raw bytes of specific headers by clicking on the header in the middle window. This will change what is displayed on the bottom window.
+* Packet Headers  
+** How data moves through layers:
+   - Protocols that have a layer have to pass data through layers of protocols on the sender machine and the reciever machine
+** Headers
+   - Extra information that is added to a packet by the sender that is used by the reciever
+   - information is added by each layer
+     - Physical layer doesn't add information often
+   - Encapsulation is the process of a packet being "wrapped" in headers
+   - Information (headers) gets removed by the recieving machine to get to the packet
+** Headers from each layer on the TCP model
+   - Physical (Osi 1)
+     - Specify details about transmission detail (wifi, hardware)
+   - Network Interface Layer (TCP/IP Layer 1)
+     - Details about communication between higher layers of protocols.
+
+* 
