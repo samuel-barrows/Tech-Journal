@@ -1,0 +1,51 @@
+#+TITLE: Sysadmin
+
+* What does a sysadmin do?
+  - Install, operate, and maintain client and server OSes
+    - Network config
+    - Configure DNS, DHCP, Active Directory, Update
+    - Troubleshoot
+    - Automate, document, configure
+    - Take notes and repeate something that works
+  - Secure a system and prevent 0 days
+  - O&M. When something comes out, you have to go and fix it ASAP
+* Week 1 Architecture:
+  - StudentX -> fw01-studentX -> SYS255-WAN -> fw-sys255 -> CYBER -> "internet"
+  - WAN: Wide Area Network
+    - You need a unique WAN IP address. Shared WAN IP addresses will not work together
+  - LAN: Local Area Network
+  - Lab Scope: Turn on firewall, connect things, set up static IPs, make sure things connect
+
+* Lab 1 Notes
+** Configuring PfSense
+   PfSense: A firewall distribution of FreeBSD that is made for the purpose of being installed on a router or firewall. It's default password is admin/Ch@mpl@1n!20
+  1. [X] The first step is to configure the virtual machine itself. We have to network it to the other machines in our virtual network.
+     * Right click on the machine in vsphere and modify the network adapters to work on the specified WAN. In our case, Network adapter 1 is going to connect out to the WAN and the second connects to our LAN. 
+  2. [X] Restart the machine
+  3. [X] Assign Interfaces
+     * The WAN, by default, is using DHCP to give itself an IP address. We don't want this as we have a specified IP assigned to us. We'll want to change this.
+     * We need to assign WAN to em0 and LAN to em1. This is done through the 1 option and going through the wizard. Don't assign VLANs.
+  4. [X] Set IPs to the Interfaces
+     * Select 2 to enter the wizard. We want to remove DHCP from WAN and LAN as want to use static addressing for out set up.
+     * We are using /24, ipv4, and no HTTP
+     * Do the same for LAN but the assigned IP is 10.0.5.2
+     * The firewall is now configured and we now want to move to windows to connect to the firewall.
+** Configuring Windows
+   Windows will use our PfSense instance as it's router and firewall. We want to configure the machine to connect to the router. We also want to make a new admin account and give it a new hostname.
+  1. [X] Make a new hostname
+     * To do this enter Settings -> System -> About -> Rename this PC
+     * Restart
+  2. [X] Make a local admin
+     * Open control panel and go into User Accounts. 
+     * Manage another account and create a new account.
+     * Add someone else to the PC and name them whatever.
+     * Make the user an admin
+     * Delete the champ account.
+  3. [X] Configure the network
+     * Set VM settings to connect the Network Adapter to the LAN.
+     * Restart
+     * Enter control panel -> Network and Internet
+     * Sharing Center -> Ethernet0 -> Properties
+     * Here we can go into the properties of IPv4
+     * We'll want to set the gateway to 10.0.5.2 and our IP to 10.0.5.100. Subnet mask is what you think it is. Our DNS is the same as the gateway.  
+  
