@@ -18,7 +18,7 @@
 
 * Lab 1 Notes
 ** Configuring PfSense
-   PfSense: A firewall distribution of FreeBSD that is made for the purpose of being installed on a router or firewall. It's default password is admin/Ch@mpl@1n!20
+   PfSense: A firewall distribution of FreeBSD that is made for the purpose of being installed on a router or firewall. It's default password is admin/pfsense
   1. [X] The first step is to configure the virtual machine itself. We have to network it to the other machines in our virtual network.
      * Right click on the machine in vsphere and modify the network adapters to work on the specified WAN. In our case, Network adapter 1 is going to connect out to the WAN and the second connects to our LAN. 
   2. [X] Restart the machine
@@ -30,7 +30,7 @@
      * We are using /24, ipv4, and no HTTP
      * Do the same for LAN but the assigned IP is 10.0.5.2
      * The firewall is now configured and we now want to move to windows to connect to the firewall.
-** Configuring Windows
+** Configuring Windows for PfSense
    Windows will use our PfSense instance as it's router and firewall. We want to configure the machine to connect to the router. We also want to make a new admin account and give it a new hostname.
   1. [X] Make a new hostname
      * To do this enter Settings -> System -> About -> Rename this PC
@@ -47,5 +47,11 @@
      * Enter control panel -> Network and Internet
      * Sharing Center -> Ethernet0 -> Properties
      * Here we can go into the properties of IPv4
-     * We'll want to set the gateway to 10.0.5.2 and our IP to 10.0.5.100. Subnet mask is what you think it is. Our DNS is the same as the gateway.  
+     * We'll want to set the gateway to 10.0.5.2 and our IP to 10.0.5.100. Subnet mask is what you think it is. Our DNS is the same as the gateway.
+     * Make sure to set the upstream gateway to 10.0.17.2. This fucked me for about an hour lmao.
+  4. [X] Finish configuring the firewall from the web browser
+     * Connect to our firewall in the browser (10.0.5.2)
+     * Login with the admin and the default password
+     * Press next to go through the wizard. 
+       * Change things and uncheck "block private networks"
   
