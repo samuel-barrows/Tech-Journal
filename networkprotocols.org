@@ -104,6 +104,7 @@
 - Advertisement to how a program works 
 - Please Do Not Throw Sausage Pizza Away
 
+* TCP/IP Model
 * Wireshark
 - Software to capture packets on a certain network device and network
 - Top will show all the packets captured and some basic details. Clicking will show more data about headers in the middle window
@@ -126,4 +127,24 @@
    - Network Interface Layer (TCP/IP Layer 1)
      - Details about communication between higher layers of protocols.
 
-* 
+* Network Models
+** Network Protocols
+   * Defines rules and conventions for communication between network devices
+   * ways for devices to identify and make connections (addressing)
+   * Formatting rules
+   * Rules on how packets are sent and recieved
+   See [[Network Protocols]]
+** Layer Models
+   * Assists in protocol design.
+     * If you are writing a protocol, you know what layers you will have to work with.
+   * "Fosters Competition" or how Reeves puts it, "Fosters Collaboration"
+     * Your solutions will have to work with those in the layers above and below yours
+   * Prevents compatability changes in one layer from affecting the ones in the others.
+     * You don't have to care about the addressing solution if you are working Application.
+     * You assume that the layers below yours are working properly with the ones around it so it works with the ones around yours
+   * Common language
+** OSI vs TCP/IP
+   * 7 Layers vs 5 Layers
+   * OSI Layers: See [[OSI Model]]
+   * TCP/IP Layers: See [[TCP/IP]]
+     
