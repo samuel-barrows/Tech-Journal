@@ -57,3 +57,24 @@
      * Press next to go through the wizard. 
        * Change things and uncheck "block private networks"
   
+
+* DNS Notes
+  * Domain Name System == DNS
+  * An important part of the interent. DNS disappearing could destroy our internet
+  * Servers are connected with wires and are associated with IPs
+    * We cannot remember all of these
+  * DNS uses an actual name to translate into the IPs
+  * Typing a URL in the your browser sends you to url.com.
+    * This hidden dot represents the root of the internet namespace
+** How DNS works
+  * Browser and Computer try and see if they know the URL in cache
+  * If they don't know where it is, the OS will ask a *Resolving Name Server*
+    * The work horse of the DNS engine
+    * Configured manually or automatically
+  * Computer queries the Resolving Name Server for the inputed URL
+    * All Resolving Name Servers should know how to find the root of the internet name server
+  * The Resolving Name Server gets information from the root on where to find the com root servers if the root doesnt know or the TLD name servers (Top Level Domain)
+    * The TLD name servers send you to the ANS (Authoritative Name Servers) if they don't know the URL
+      * The TLD name server know what ANS to use based on the URL registrar
+  * The Resolving Name Server continues on to the ANS and gets the IP of the website that they are requesting.
+This all takes a really fast time
