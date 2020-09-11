@@ -1,0 +1,93 @@
+#+TITLE: Linux Programming
+
+* Miscellaneous Bash Command Line
+ * Hardlinks
+  #+BEGIN_SRC bash
+    ln file1 hlink1
+  #+END_SRC   
+  A hardlink deleted/modified will delete and/or modify the original file
+  A soft or symbolic link is a psydonym for the real file and entering a soft link directory will practically send you to the new directory
+ * apropos
+ * One Line For Loop
+   #+BEGIN_SRC bash
+   for i in $(seq 1 10); do echo $i; done 
+   #+END_SRC 
+** Relative Paths
+   * Absolute path: /, /home/sam, etc. These are 100% guranteed to be directories.
+   * Relative Path: ~cd directory1~. This is moving to a directory, but that directory has to be in my current directory.
+** Interactive Commands:
+   Command prompts you before it runs
+   
+* SSH stuff
+** ssh-keygen
+   * ~ssh-keygen -C "hawk-keys"~ Generates keys with the comment of "hawk-keys"
+   * Protect ~id_rsa file~. The one with ~.pub~ is the public one
+   * ~ssh-copy-id username@domain~ pulls the public key from the domain and allows us to connect without a password
+   * 
+** Stack
+   * Items in an order and used in an order. Directory structure is a stack, for example.
+* Disk Stuff
+   * Disks or potentially dangerous operations need to be run in root
+   * ~fdisk -l~ lists out the drives on the system
+   * ~lsblk~ lists out block devices
+   * ~fdisk /dev/sdb/~ will format the drive ~/dev/sdb~
+   * In order to mount the file system on boot, you need to add the file system to the fstab file as follows:
+     + ~/dev/sdb1    /data    ext4    defaults    0 0~
+     + obv, sdb1 is replaced with your actual drive and this is modified to suit your needs.
+     + This could break your system lol
+   * Put home directories in other drives so the boot drive doesn't fill up with users
+   * ~mount -a~ will mount drivers in fstab without rebooting the system
+
+* I/O
+  * Standard output is a file (stdout) (like everything else in linux)
+** Redirectiong Standard Output
+  * We can use the ~>~ redirection operator followed by the name of a file to redirect standard output into the said file
+    * If we redirect an empty standard output into a file, it will overwrite the file with nothing
+    * The destination file is always rewritten from the beginning of the file
+  * Error messages are not sent to standard output, but rather to standard error (stderr)
+  * Appending to a file from standard output can be done with the ~>>~ redirection operator
+** Redirection Standard Error
+  * In order to redirect the standard error, we need to refer to the file descriptor, of which there are three
+    0) standard input
+    1) standard output
+    2) standard error
+  * So if we want to redirect the standard error, we need to do something along the lines of the following:
+    #+BEGIN_SRC bash
+    ls -l /bin/usr 2> ls-error.txt
+    #+END_SRC
+    This will redirect the error that this generates into the file ~ls-error.txt~
+** Redirecting all output
+   #+BEGIN_SRC bash
+   ls -l /bin/usr > ls-output.txt 2>&1
+   #+END_SRC
+   This will redirect the error into the standard output (~2>&1~) and then the output into the file
+   * Newer versions of bash allow you to just use ~&>~ and ~&>>~ to redirect both into a file
+** Getting rid of unwanted output
+   We can just redirect output into /dev/null lol 
+** Standard Input
+   * ~cat~ can be used to display file content to standard output. That means we can redirect it's output into other files that we give it.
+     * ~cat~, by default, reads from standard input.
+     * if we run ~cat > file.txt~, it will practically prompt us for input. With this, we can type whatever and then press ~C-d~ to tell ~cat~ to stop and finish. This will write whatever we type into ~file.txt~
+   * Using ~<~, we can redirect standard input into a command. If we run ~cat < file.txt~, it will send ~file.txt~ into ~cat~. While ~cat~ works like this without ~<~, it is only used as an example right now. I'm sure it's useful for something...
+** Pipelines
+   #+BEGIN_SRC bash
+   command1 | command2 
+   #+END_SRC
+   This sends the output of command 1 into the input of command2.
+   * This is different from the redirection operator as the redirection operator deals with file and a command, while pipelines deal with direct input from the output of a command
+     * A redirection operator done like this: ~ls > less~ could overwrite the executable of ~less~ with the output of ~ls~. This is funny lol
+   * Pipelines can be used in conjunction with /filters/ in order to get a desired output
+   #+BEGIN_SRC bash
+   ls /bin /usr/bin | sort | less 
+   #+END_SRC
+   * ~uniq~ is often used in conjunction with ~sort~ as ~uniq~ takes a sorted list and removes duplicates from the list
+   * ~wc~ can print lines, words, and byte counts and can, like any other command, have input piped into it.
+   * ~grep~ outputs lines that match a certain pattern. Can be useful for searching directories with lots of files for a certain command by piping the output of ~ls~ into ~grep~
+   * ~head~/~tail~ can be used to print the first/last few lines of a file. With ~n 5~, we'll see the first/last 5 lines of an inputted file
+     * ~tail~ has an option to see files in real time (~-f~). This can be used to watch, say, logs coming from ~/var/log/messages~.
+   * ~tee~ can be used as mediator in a pipeline. It can take input and output it into a file, in which can be ~grep~ ed for filtered info
+   * 
+* Permissions
+  * If we try and run ~file~ on a file that we do not have permission to interact with, we will get an error instead of getting our desired outcome
+    * For example, regular users do not have rights to view or modify ~/etc/shadow~
+  * Users can have acc

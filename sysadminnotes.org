@@ -57,8 +57,8 @@
      * Press next to go through the wizard. 
        * Change things and uncheck "block private networks"
   
-
 * DNS Notes
+** What is DNS
   * Domain Name System == DNS
   * An important part of the interent. DNS disappearing could destroy our internet
   * Servers are connected with wires and are associated with IPs
@@ -66,6 +66,19 @@
   * DNS uses an actual name to translate into the IPs
   * Typing a URL in the your browser sends you to url.com.
     * This hidden dot represents the root of the internet namespace
+  * In our setup, our domain is cyber.local. It has the records to our local stuff, but not stuff outbound
+  * DNS uses both UDP and TCP
+  * Even 8.8.8.8 doesn't know a URL per-say, but it will go ask the name servers it uses until it finds the IP for the URL
+  * Popular DNS Records
+    * A - Address Record used to resolve a name to IPv4 (most common record)
+    * CNAME - Canonical Name Record used to alias one name to another
+    * AAAA - Address Record for IPv6
+    * PTR - Pointer Record used to resolve IPv4 to name (reverse query)
+    * MX - Mail Exchange used to identify email servers for a domain
+    * SRV - Service locator locates services like SIP servers, Conference Servers  
+  * A DNS server is just a list of A records pretty much
+  * DNS has a cache locally on machines that will help machines connect faster to recent sites
+  * RFC - Request for Comments. Specs for Protocols
 ** How DNS works
   * Browser and Computer try and see if they know the URL in cache
   * If they don't know where it is, the OS will ask a *Resolving Name Server*
@@ -78,3 +91,64 @@
       * The TLD name server know what ANS to use based on the URL registrar
   * The Resolving Name Server continues on to the ANS and gets the IP of the website that they are requesting.
 This all takes a really fast time
+
+* Active Directory Notes
+  * AD gives us the "god mode" for the whole domain
+  * Core Services
+    * AD Services
+    * DNS
+    * DHCP
+  * When you are on a domain, the credentials are stored on the AD which is more secure than local machines
+  * DNS comes with AD. You cannot have one without the other in a Domain Controller promoted server.
+  * Don't manually add entries to "Computers" as AD will do this for us when a computer has joined the Domain.
+* Server 2019 Configuration (Lab 2 Notes)
+  * For our purposes, use all the default settings except skip over the product key if prompted and set an admin password.
+  * Open up server manager and configure the local network so that it interfaces with our FW
+  * Set up local network like you would in normal windows 10
+    * Set DNS to the gateway (our FW)
+    * Turn on discoverability if it pops up
+  * Change the hostname and set time to ETC
+    * This will require a reboot once changed
+** Installing ADDS Role in Server Manager
+   * Go to Manage and click Add Roles and Features. Here we will be able to install services and the like.
+   * When you get to ~Server Roles~, check Active Directory Domain Services and Add Features
+   * Check off Restart destination server if required.
+   * This installation takes a bit.
+** Promoting to a Domain Server
+After the installation for Domain Services is set, we can promote the Server to become a DC
+  * Press the flag at the top and click the promote link. Make sure the hostname is set. Verify with a ~whoami~
+  * Forest - Domain
+    * Mine will be sam.local
+  * We'll need to set a DSRM (Directory Services Restore Mode) password in case anything goes terribly wrong.
+  * At this point, we'll have an error. This is fine as we are working locally with our .local TLD (top level domain). Valid top level domains are .com and the like
+  * Everything else is defaults in this wizard
+  * Install and reboot
+  * We will boot and sign in as domain admin
+
+** Adding a DNS Record
+   * At this point, our DNS server is now set to 127.0.0.1 instead of our FW. DNS queries that aren't handled here are sent to FW, in turn, sending it to it's DNS
+   * We'll want to create a DNS record here so that anyone using this server as it's DNS will be able to resolve fw01.sam.local to it's IP, which will allow further outbound connection.
+     * Trying to ping the hostname will result in error
+   * To add the record, we'll want to get to the DNS manager. We do this by going to DNS on the left, and then right clicking on our server and selecting DNS manager
+*** Forward Lookup Zone:
+    * Expand our domain and right click it, adding a new host (A)
+    * Here we'll add our name, domain name, and IP address
+    * We'll want to create the PTR record as well
+     * This will error because we need to set up a reverse lookup zone in order to actually create a PTR record
+***  Reverse DNS
+    * On the left, we'll see the Reverse Lookup Zones folder. Here, we'll want to create a new lookup zone for 10.0.5.0/24 network (our local network)
+    * After this is created, we'll want to update our A record
+** Named Domain Users on AD Server
+  * To add new users, right click our server in AD DS and click Active Directory Users and Computers
+    * Here we can right open our domain, right click Users, and add a new user.
+  * The admin name should have the suffix ~-adm~
+  * Add a user to a group by simply right clicking them and adding them to a group
+
+* Joining a windows machine to a domain
+  * Change the machine's DNS to the DNS of our DC
+    * This is important
+  * Test name resolution by pinging a hostname.domain.local
+  * Go to System Properties. Here you can change the domain.
+    * When you change the domain, you have to enter in the creds of an account with access to the domain
+      * Give this a second, and then you will see a welcome message.
+  * Restart
