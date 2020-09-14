@@ -14,14 +14,14 @@
    * You may need to consider things like distance, speed, amount of data, integrity, redundance, etc. These are things to consider when dealing with network protocols.
 
 * Postal mail analogy vs. Sending a Packet
-- Address is like an IP address. 
-  - DNS is like a phone book that finds all the addresses of that you need
-- Post Office is like the local router
-- Zip code is like the network part of an IP address.
-- Routing list is like a routing table
-  - They know the next hop, not the full route
-- Mail Carrier delivers to the recipient using the street address 
-  - Uses host part of IP address and MAC address to send to the machine on the local router 
++ Address is like an IP address. 
+  * DNS is like a phone book that finds all the addresses of that you need
++ Post Office is like the local router
++ Zip code is like the network part of an IP address.
++ Routing list is like a routing table
+  * They know the next hop, not the full route
++ Mail Carrier delivers to the recipient using the street address 
+  * Uses host part of IP address and MAC address to send to the machine on the local router 
 
 * Network Protocols 
 - Defines rules and convention for communication between network devices. 
@@ -114,18 +114,20 @@
   - You can see the raw bytes of specific headers by clicking on the header in the middle window. This will change what is displayed on the bottom window.
 * Packet Headers  
 ** How data moves through layers:
-   - Protocols that have a layer have to pass data through layers of protocols on the sender machine and the reciever machine
+   * Protocols that have a layer have to pass data through layers of protocols on the sender machine and the reciever machine
 ** Headers
-   - Extra information that is added to a packet by the sender that is used by the reciever
-   - information is added by each layer
+   * Extra information that is added to a packet by the sender that is used by the reciever
+   * information is added by each layer
      - Physical layer doesn't add information often
-   - Encapsulation is the process of a packet being "wrapped" in headers
-   - Information (headers) gets removed by the recieving machine to get to the packet
+   * Encapsulation is the process of a packet being "wrapped" in headers
+   * Information (headers) gets removed by the recieving machine to get to the packet
 ** Headers from each layer on the TCP model
-   - Physical (Osi 1)
+   * Physical (Osi 1)
      - Specify details about transmission detail (wifi, hardware)
-   - Network Interface Layer (TCP/IP Layer 1)
+   * Network Interface Layer (TCP/IP Layer 1)
      - Details about communication between higher layers of protocols.
+** Footer
+   * Just everything at the very end
 
 * Network Models
 ** Network Protocols
@@ -148,3 +150,54 @@
    * OSI Layers: See [[OSI Model]]
    * TCP/IP Layers: See [[TCP/IP]]
      
+* Ethernet and ARP
+** What is Ethernet?
+   * Not the cable
+   * A communication paradigm/protocol
+   * Check line, if clear, send message
+   * 2 computers sending at a time can cause a collision
+   * Needs to know where it's going, where data is going, what to do with data
+     * Source Address, Destination Address, "EtherType" Field
+   * Header is 14 bytes, 6 for destination, 6 for source, 2 for "EtherType"
+   * MAC Addresses
+     * 6 bytes
+       * First 3 are OUI (Manufacturer)
+         * Identify the NIC, not nessesarily the whole product
+       * Last 3 are the "uniquely" identify the device
+         * They don't really, but try
+   * Type Field: What value is coming next EtherType
+     * 0x0800 IPV4
+     * 0x06DD IPV6
+     * 0x0806 is ARP
+** Address Resolution
+   * Request is sent using IP one hop at a time physical networks.
+   * At each hop, a transmission occurs using MAC addresses
+   * ARP gives us the MACs of the devices that we need to hop to
+   * ARP Order:
+     1. Begins when a source device on an IP network needs to send a piece of IP data
+     2. Decides where it needs to go, either distant or local
+     3. If local, it ask in a broadcast for the MAC
+     4. If distant, it asks for the default gateway's MAC
+   * ARP has a specificy format that includes information on the MACs, the lengths, the sender IP, and the target IP
+   * There is no footer.
+   * ARP is kind of inefficient every time, so we have an ARP cache for recent MAC addresses we just looked up.
+   * Cache expires if not used for a little bit.
+   * ARP kind of lacks some security. There is no verification, leaving it vulnerable to certain attacks
+** Attacks
+   * MAC spoofing. Easy way to mimic MAC of a different machine
+   * We can bypass MAC-based network controls
+     * MAC restrictions can just be subverted
+   * ARP spoofing: Convincing a sender that you are the intended reciever.
+     * You dont need to spoof a MAC, you just have to spoof an ARP response.
+     * This results in a MITM attack
+   * Gratuitous ARP: ARP Reply that was never requested. 
+   * DoS Attack
+   * MITM Attack
+   * Session Hijacking
+   * This is all Layer 2, so you have to be on the same local network to be vulnerable to this attack
+*** Protecting against ARP spoofing
+    * MAC-To-Port mappings at the switch level so you have to be hardwired 
+    * Static IP-to-MAC mappings, so every MAC has a specified IP address assigned to it.
+    * Dynamic ARP inspection.
+      * Spies on DHCP traffic and builds a table between each MAC/IP/Port. The switch will throw away packets that don't fit the trend
+  
