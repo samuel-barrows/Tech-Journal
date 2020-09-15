@@ -87,7 +87,18 @@
      * ~tail~ has an option to see files in real time (~-f~). This can be used to watch, say, logs coming from ~/var/log/messages~.
    * ~tee~ can be used as mediator in a pipeline. It can take input and output it into a file, in which can be ~grep~ ed for filtered info
    * 
-* Permissions
+** Interactive
+   Can mean two things:
+   1. Prompt user before doing something
+   2. Performs a volatile action that is only there for that session
+* Permissions/Modes
   * If we try and run ~file~ on a file that we do not have permission to interact with, we will get an error instead of getting our desired outcome
     * For example, regular users do not have rights to view or modify ~/etc/shadow~
   * Users can have acc
+  * Proper term is mode. chmod == change mode
+  * ~umask~ is a bitwise function that show the permissions on a file.
+  * Default mode is very open, files in your home directory can be accessed by other users on the system
+    * This is from the idea of linux philosophy of being very open source
+* AWS/Cloud9
+  * AWSEducate just handles logons. Vocarium will deal with Cloud9
+  * Cloud9: An IDE that is completely virtualized in a cloud. Has a terminal, has an IDE, other things
