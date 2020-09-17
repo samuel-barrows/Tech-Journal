@@ -183,6 +183,41 @@
    * ARP is kind of inefficient every time, so we have an ARP cache for recent MAC addresses we just looked up.
    * Cache expires if not used for a little bit.
    * ARP kind of lacks some security. There is no verification, leaving it vulnerable to certain attacks
+*** Chapter 13 Notes
+    * Every device with a full featured network stack should have addresses at layer 2 and 3. Address resolution is what links the two together.
+    * Addressing is done at two layers because they are different serve different purposes.
+    * Layer 2 addresses work on local transmissions between devices that can communicate directly
+    * Layer 3 addresses internetwork to create something similar to a large virtual network at the network layer
+    * Even devices that communicate logically on the IP layer, but must also be accompolished in the data link
+      * You must translate. This is address resolution
+**** Direct Mapping
+     * You take a scheme from the layer 2 and 3 address and determine one from the other using a simple algorithm
+     * This only works when the data link layer address is a functino of the network layer address
+     * impossible when the layer 2 address is larger than the layer 3 address
+**** Dynamic Address Resolution
+     * simple and highly efficient
+     * This involves bullying other devices on the network for information on the layer 2 address that corresponds with the layer 3 address
+     * Removes the restrictions from direct mapping
+     * Invovles an extra message than direct mapping does and requires a broadcast message that is sent to everyone.
+       * This is resolved with a chaching mechanism
+**** ARP
+     * Dynamic resolution protocol that matches IP addresses to data link addresses. Originally written for Ethernet, but allowed IP to work over layer 2 technologies
+     * In IP, Ethernet addresses are 48 bits while IP was 32, ruling out direct mapping
+     * Basic ARP is as follows:
+       1) Source device has an IP data-gram and needs to determine if it's on the local network or a distant network
+       2) If it's the former, it will send it directly to the destination
+       3) After packaging it, it sends it to it's ARP software for address resolution
+     * General Operation is as follows:
+       1) Check ARP cache for destination hardware address
+       2) Generate ARP request frame
+       3) Broadcast ARP request frame
+       4) Destination recieves and processes request frame
+       5) Generates ARP reply frame
+       6) Updates ARP cache
+       7) Sends the ARP Reply Frame
+       8) Source recieves the reply frame
+       9) Updates ARP cache
+     * Has 9 fields in a message
 ** Attacks
    * MAC spoofing. Easy way to mimic MAC of a different machine
    * We can bypass MAC-based network controls

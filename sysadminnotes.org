@@ -92,6 +92,9 @@
   * The Resolving Name Server continues on to the ANS and gets the IP of the website that they are requesting.
 This all takes a really fast time
 
+** More DNS info
+   * ~ipconfig /flushdns~ in an elevated command prompt will flush the dns cache on the system
+   *  
 * Active Directory Notes
   * AD gives us the "god mode" for the whole domain
   * Core Services
