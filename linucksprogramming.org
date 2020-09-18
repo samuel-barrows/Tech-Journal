@@ -119,6 +119,9 @@
    * umask is what has been subtracted from a permission. If you run the command ~umask~ in a dir with perms of 775, it will return a value of ~0002~.
    * umask calculations are done per octal digit. 666-27 is 640.
    * ~umask~ run in a session is only good for a certain session. We'll want to make this permanent by adjusting the ~~/.profile~ file.
+   * ~stat~ can be run on any file to see the permissions on it.
+   * umask is the octal subtraction of the default permissions by whatever the user's umask is set to.
+     * There are no negatives in umask, it just goes to 0
 * AWS/Cloud9
   * AWSEducate just handles logons. Vocarium will deal with Cloud9
   * Cloud9: An IDE that is completely virtualized in a cloud. Has a terminal, has an IDE, other things

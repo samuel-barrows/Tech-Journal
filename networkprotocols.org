@@ -183,6 +183,7 @@
    * ARP is kind of inefficient every time, so we have an ARP cache for recent MAC addresses we just looked up.
    * Cache expires if not used for a little bit.
    * ARP kind of lacks some security. There is no verification, leaving it vulnerable to certain attacks
+   * A footer might be included if the packet does not meet a minimum length requirnment. 
 *** Chapter 13 Notes
     * Every device with a full featured network stack should have addresses at layer 2 and 3. Address resolution is what links the two together.
     * Addressing is done at two layers because they are different serve different purposes.
@@ -236,3 +237,54 @@
     * Dynamic ARP inspection.
       * Spies on DHCP traffic and builds a table between each MAC/IP/Port. The switch will throw away packets that don't fit the trend
   
+
+* Routing Tables
+  * Determines where to send a packet
+  * Requires the following info:
+    1. Network Address
+    2. Subnet Mask
+    3. Next Hop
+    4. Interface
+  * A router that connects two networks will need routing table entries for information between the two routers
+  * Are not bound to just that info, can have Distance (number of hops) or Prefrence (if it has multiple ways to get somewhere)
+  * A router does not need to know the entire path just the next hop
+  * A CAM table for a switch will have the Host, MAC, and port
+* IP
+  * The most common layer 3 protocol
+  * Does a few important funtions:
+    * Addressing
+      * identify both the network address as well as the host address of the device interface
+    * Routing/Indirect Delivery
+      * final destination is often distant
+      * NIC to NIC (layer 2 transmission) wont work in this case
+      * Datagram must be sent indirectly by sending it to the next hop
+    * Fragmentation and Reassembly
+      * Layer 1 and 2 have maximum frame size
+      * Can splits datagrams into pieces for easier transmission
+      * the destination machine will reassemble the packet to recreate the whole datagram
+    * TTL (Time To Live)
+      * Important as packets could end up floating forever if it never reaches it's destination
+      * TTL decreases by one at every hop
+** IP Header
+   * Version
+     * 4 or 6
+   * Header length
+     * Just the header
+   * Protocol
+     * for example, 1 is ICMP, 6 is TCP, or 17 is UDP
+   * Total Length
+     * The entire IP datagram or packet
+   * Fragmentation Offset
+     * The order of the fragments to put it back together
+   * IP Flags
+   * Header Checksum
+   * RFC 791
+
+* ICMP
+  * Internet Control Messaging Protocol
+  * Generally just carries system messages such as ping
+  * Contains messages that report errors or messages to obtain information
+    * Echo Request and Echo Reply
+  * Errors
+    * Time exceeded or Destination unreachable 
+      * TTL Expires
