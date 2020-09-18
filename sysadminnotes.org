@@ -155,3 +155,27 @@ After the installation for Domain Services is set, we can promote the Server to 
     * When you change the domain, you have to enter in the creds of an account with access to the domain
       * Give this a second, and then you will see a welcome message.
   * Restart
+* Linux Fundamentals
+  * The center point of a lot of OSs. It's a kernel.
+  * Linux != Unix
+    * Unix is a lot of older which is a single user, single task OS
+    * Linux has networking, multi-users, multi-tasking, etc
+  * Linux is stable and open source
+  * Lots of linux distros
+  * Enterprise uses CentOS as it is based off of Red Hat
+    * CentOS uses ~yum~ as a package
+    * Packages can be updated and upgraded with ~yum update~ or ~upgrade~ respectively.
+  * To set up the network on our machine, we can use the GUI for network manager called ~nmtui~. This makes it easy to configure our IPs and hostname as par for this course
+  * As we don't want to "run with scissors", we'll want to create an account that doesn't have root all the time.
+  * We'll do this with the ~adduser~ command which will create a home directory
+  * We'll need to add a password for the user, which can be done with ~passwd~
+  * We can also remove a user with ~userdel~ if we mess anything up
+  * Giving the user sudo permissions is easy enough and can be done by assigning the user to the ~wheel~ group.
+  * ~history~ can be used to display your history. You can also view this in the hidden file of ~.bash_history~ in your home directory.
+    * ~history -c~ can also clear your history
+** Command Log:
+   * ~userdel~ can be used to delete a user
+   * ~umask~ can be used to change the default permissions for a user. This is not persistant though and will need to be added to a config for future persistance.
+   * ~id $USER~ will display the groups the logged in user is in. If you replace the $USER variable with another user on the machine, you will see their permissions, granted you have root.
+
+  
