@@ -96,7 +96,31 @@
    1. Prompt user before doing something
    2. Performs a volatile action that is only there for that session
 * Permissions/Modes 
-* If we try and run ~file~ on a file that we do not have permission to interact with, we will get an error instead of getting our desired outcome * For example, regular users do not have rights to view or modify ~/etc/shadow~ * Users can have acc * Proper term is mode. chmod == change mode * ~umask~ is a bitwise function that show the permissions on a file. * Default mode is very open, files in your home directory can be accessed by other users on the system * This is from the idea of linux philosophy of being very open source * ~adduser~ will add a user to a system. * ~useradd~ will create a user without a home directory. It's strange * ~id $USER~ can be used to find the id numbers associated with that user * ~su~ can be used to switch a user. we'll need perms for this * It's not the name that gives an accout perms, but the UID and the GID * An account with UID and GID of 0 (root) will have root access * By default, any user can read and execute in your home directory. * We'll want to change this with the ~chmod~ command. #+BEGIN_SRC bash chmod -v o-rwx /home/user #+END_SRC In this example, we are running change mod with verbose and removing(-) read write and execute from the other user group. * ~groupadd~ will create a new group on the system. * ~usermod -aG~ will add a user to a group (group, user) * ~chown~ will change the ownership of a file ** Umask * Files are created by default with permissions 777 (octal for rwx on your uid and all groups) for directories and 666 for files. * umask is what has been subtracted from a permission. If you run the command ~umask~ in a dir with perms of 775, it will return a value of ~0002~. * umask calculations are done per octal digit. 666-27 is 640. * ~umask~ run in a session is only good for a certain session. We'll want to make this permanent by adjusting the ~~/.profile~ file. * ~stat~ can be run on any file to see the permissions on it. * umask is the octal subtraction of the default permissions by whatever the user's umask is set to. * There are no negatives in umask, it just goes to 0
+  * If we try and run ~file~ on a file that we do not have permission to interact with, we will get an error instead of getting our desired outcome 
+  * For example, regular users do not have rights to view or modify ~/etc/shadow~ 
+  * Users can have acc * Proper term is mode. chmod == change mode 
+  * ~umask~ is a bitwise function that show the permissions on a file. 
+  * Default mode is very open, files in your home directory can be accessed by other users on the system 
+  * This is from the idea of linux philosophy of being very open source 
+  * ~adduser~ will add a user to a system. 
+  * ~useradd~ will create a user without a home directory. It's strange   
+  * ~id $USER~ can be used to find the id numbers associated with that user 
+  * ~su~ can be used to switch a user. we'll need perms for this 
+  * It's not the name that gives an accout perms, but the UID and the GID 
+  * An account with UID and GID of 0 (root) will have root access 
+  * By default, any user can read and execute in your home directory. 
+  * We'll want to change this with the ~chmod~ command. #+BEGIN_SRC bash chmod -v o-rwx /home/user #+END_SRC In this example, we are running change mod with verbose and removing(-) read write and execute from the other user group. 
+  * ~groupadd~ will create a new group on the system. 
+  * ~usermod -aG~ will add a user to a group (group, user) 
+  * ~chown~ will change the ownership of a file 
+  ** Umask 
+    * Files are created by default with permissions 777 (octal for rwx on your uid and all groups) for directories and 666 for files. 
+    * umask is what has been subtracted from a permission. If you run the command ~umask~ in a dir with perms of 775, it will return a value of ~0002~. 
+    * umask calculations are done per octal digit. 666-27 is 640. 
+    * ~umask~ run in a session is only good for a certain session. We'll want to make this permanent by adjusting the ~~/.profile~ file. 
+    * ~stat~ can be run on any file to see the permissions on it. 
+    * umask is the octal subtraction of the default permissions by whatever the user's umask is set to. 
+    * There are no negatives in umask, it just goes to 0
 * AWS/Cloud9
   * AWSEducate just handles logons. Vocarium will deal with Cloud9
   * Cloud9: An IDE that is completely virtualized in a cloud. Has a terminal, has an IDE, other things
