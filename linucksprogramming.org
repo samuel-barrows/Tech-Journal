@@ -113,7 +113,7 @@
   * ~groupadd~ will create a new group on the system. 
   * ~usermod -aG~ will add a user to a group (group, user) 
   * ~chown~ will change the ownership of a file 
-  ** Umask 
+** Umask 
     * Files are created by default with permissions 777 (octal for rwx on your uid and all groups) for directories and 666 for files. 
     * umask is what has been subtracted from a permission. If you run the command ~umask~ in a dir with perms of 775, it will return a value of ~0002~. 
     * umask calculations are done per octal digit. 666-27 is 640. 
