@@ -237,7 +237,6 @@
     * Dynamic ARP inspection.
       * Spies on DHCP traffic and builds a table between each MAC/IP/Port. The switch will throw away packets that don't fit the trend
   
-
 * Routing Tables
   * Determines where to send a packet
   * Requires the following info:
@@ -249,7 +248,19 @@
   * Are not bound to just that info, can have Distance (number of hops) or Prefrence (if it has multiple ways to get somewhere)
   * A router does not need to know the entire path just the next hop
   * A CAM table for a switch will have the Host, MAC, and port
-* IP
+* ICMP
+  * Internet Control Messaging Protocol
+  * Generally just carries system messages such as ping
+  * Contains messages that report errors or messages to obtain information
+    * Echo Request and Echo Reply
+  * Errors
+    * Time exceeded or Destination unreachable 
+      * TTL Expires
+  * 
+* IP And Routing
+  * Layer 3 Funtion is to deliver messages between devices despite what network they are on
+  * IP is the main protocol for this layer. 
+** IP
   * The most common layer 3 protocol
   * Does a few important funtions:
     * Addressing
@@ -266,6 +277,8 @@
       * Important as packets could end up floating forever if it never reaches it's destination
       * TTL decreases by one at every hop
 ** IP Header
+   * An IPv4 header includes information on the version, the protocol, the header length, fragmentation.
+   * Evil bit can tell if something looks suspicious and can be attached by a router in between.
    * Version
      * 4 or 6
    * Header length
@@ -279,12 +292,32 @@
    * IP Flags
    * Header Checksum
    * RFC 791
-
-* ICMP
-  * Internet Control Messaging Protocol
-  * Generally just carries system messages such as ping
-  * Contains messages that report errors or messages to obtain information
-    * Echo Request and Echo Reply
-  * Errors
-    * Time exceeded or Destination unreachable 
-      * TTL Expires
+** Routing
+   * VRRP (Virtual Router Redundancy Protocol)
+     * A way of creating virtual routers that can act as backup in case the main one goes down
+     * The destination MAC of the request may not be the same one as the reply for this reason.
+   * Routers transfer packets between devices
+   * Decides where to send a packet based on identifying information in the destination IP address.
+   * Routing Tables have 4 pieces of info:
+     1. Network address
+     2. Subnet Mask
+     3. Next Hop
+     4. Interface
+   * A default route will be used in the case that an address is not in a routing table. It will send the data to the routers gateway
+   * IGP (Interior Gateway Protocols)
+     * Inside of an organization.
+   * EGP (Exterior Gateway Protocols)
+   * Distance Vector
+     * Takes the shortest route to get to it's destination
+   * Link State
+     * Will take into account bandwidth as well as hops
+*** RIPv2
+    * Distance Vector
+    * Routers send out broadcasts/multicasts that have their entire routing table to other routers. 
+    * Easy to configure, but inefficient. A lot of broadcasts happen
+    * Does not scale well.
+    * Protocol field has a few distinct pieces of info. The command, version, the route, etc
+*** Link State Routing Protocols
+    * Instead of broadcasting their table every 30 seconds, it will only send "keep-alive" messages and then send only the change to their table.
+    * OSPF is an example. Sends out Link State Advertisements which includes the change to the routing table
+       
