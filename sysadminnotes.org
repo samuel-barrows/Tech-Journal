@@ -192,3 +192,28 @@ After the installation for Domain Services is set, we can promote the Server to 
    The devices directory is where devices are mounted as special files.
 
   
+
+* DHCP
+  * DHCP is important for how we operate with networking
+  * Dynamic Host Configuration Protocol
+  * Assigns IP addresses to hosts
+  * Provides otther address, the subnet mask, default gateway, and the DNS address
+  * Can be a client and as a server
+  * Example:
+    * Two computers connected to a switch and to a router
+    * computers need unique IP addresses
+    * These could be assigned manually, but that doesn't work when we need to scale up
+    * Each computer runs a DHCP client to ask the DHCP server for an IP address
+    * Enterprise most likely has a dedicated server
+  * Process 
+    1. DHCPDiscover: a computer will broadcast for a DHCP server when they are connected to the network. 
+    2. DHCPOffer: When the server get's the message, the server will offer an available IP address.
+       * If more than one are offered, the client will pick the first one it recieves
+    3. DHCPRequest: The client who got the offer will then confirm that it will take the offered IP address
+    4. DHCPACK: The server will send the IP address, the subnet mask, gateway, and DHCP server to the client.
+  * The server gives IP addresses on a "lease". If the IP address is not renewed within that period, the IP address will go back into the pool of available IP addresses
+    * The server keeps track of all the IP addresses given out
+  * The UDP ports that it operates on are 68 for the client and 67 for the server
+  * Different settings and scenerios can change the process described here, but this is just a general overview
+      
+     
