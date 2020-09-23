@@ -173,9 +173,22 @@ After the installation for Domain Services is set, we can promote the Server to 
   * Giving the user sudo permissions is easy enough and can be done by assigning the user to the ~wheel~ group.
   * ~history~ can be used to display your history. You can also view this in the hidden file of ~.bash_history~ in your home directory.
     * ~history -c~ can also clear your history
+  * 
 ** Command Log:
    * ~userdel~ can be used to delete a user
    * ~umask~ can be used to change the default permissions for a user. This is not persistant though and will need to be added to a config for future persistance.
    * ~id $USER~ will display the groups the logged in user is in. If you replace the $USER variable with another user on the machine, you will see their permissions, granted you have root.
+   * ~w~ or ~who~ will allow you to see who is logged in on the system right now.
+** Directory Info:
+ * /bin
+   This directory is used to store commands that can be run on the system.
+ * /etc
+   This directory contains all system related configuration files.
+ * /home
+   Here is where all the user files are found.
+ * / 
+   Root is where all the files on the system are mounted and where everything stems from.
+ * /dev
+   The devices directory is where devices are mounted as special files.
 
   
