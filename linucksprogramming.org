@@ -154,4 +154,58 @@
   * ~tail -n 10~ will show the last 10 lines
   * ~sort~ will sort things alpha-numerically
   * ~uniq -c~ will get rid of duplicates, but also count the frequency of them
+  
     
+
+* Shell Scripting
+  * When we write a script, we'll want to change the permissions so we can execute it. We'll use either ~chmod 755 script~ or ~chmod 700 script~ depending on who we want to see it.
+  * The shell knows the name of scripts and programs because they are added to our PATH.
+    * We can add directories to our PATH with ~export PATH=$PATH:directory~, though, we would probably ant to add this to our ~.bash_profile~ so it runs every time we login.
+  * Linux distros encourage using a personal bin folder in our home directories. Scripts in here will be auto added to our PATH on the next login.
+  * When the system is logged into, the system reads startup files. These are generally found in your dotfiles or in ~/etc/~
+    * For example, ~/etc/profile~ is a global config script that applies to all users
+    * ~.bash_profile~ is a file used to extend or overwrite configs that apply globablly
+  * Non-login shell session use the following (bash specific)
+    * ~/etc/bash.bashrc~ : global
+    * ~.bashrc~ : local
+  * ~alias~ is a good way to shorten a long command
+    #+BEGIN_SRC bash
+    alias name=value
+    #+END_SRC
+  * Shell functions are "scripts within scripts" that act similarly to functions in other languages
+  * Quotes can be used effectivly in a way that allows for a few lines to be echoed out instead of using ~echo~ on multiple lines
+    * This can be inefficient at times. We can get arround the quotes by using a "here" script see the following:
+      #+BEING_SRC bash
+        #!/bin/bash
+        cat << _EOF_
+        <html>
+        <body>
+          this is a body
+        </body>
+        </html>
+        _EOF_
+      #+END_SRC
+      By wrapping our text like this, we can feed cat a stream of text. 
+    * _EOF_ in this case is a /token/. EOF is traditional, but you can use anything as long as it doesn't interfer it bash commands or their reverse.
+    * We can change ~<<~ to ~<<-~ in order to ignore leading tabs (but not spaces) in our here script
+  * Variables can be declared and called as per the following:
+    #+BEING_SRC bash
+      title="Cool Title!"
+      echo $title
+    #+END_SRC
+    Keep in mind that spaces are illegal in our declaration
+    * Environment variables can be called the same way
+      * Env variables are generally written in all caps
+  * We can create a substitution, as it is called, as per the following:
+    #+BEGIN_SRC bash
+      $(date +"%x %r %Z) #This basically creates a temp variable that is the aglutination of the date command
+    #+END_SRC
+    * This an be assigned to a variable like anything else
+  * Constants can be declared with caps lock enabled
+  * Functions can be declared per the following:
+    #+BEGIN_SRC bash
+      cool_function(){
+        echo "awesome!"
+      } 
+      cool_funtion()
+    #+END_SRC
