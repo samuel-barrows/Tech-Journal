@@ -173,7 +173,8 @@ After the installation for Domain Services is set, we can promote the Server to 
   * Giving the user sudo permissions is easy enough and can be done by assigning the user to the ~wheel~ group.
   * ~history~ can be used to display your history. You can also view this in the hidden file of ~.bash_history~ in your home directory.
     * ~history -c~ can also clear your history
-  * 
+  * A service in linux is called a daemon and services will generally have a 'd' at the end of a service name
+    * ~httpd~ is a daemon
 ** Command Log:
    * ~userdel~ can be used to delete a user
    * ~umask~ can be used to change the default permissions for a user. This is not persistant though and will need to be added to a config for future persistance.
@@ -190,9 +191,7 @@ After the installation for Domain Services is set, we can promote the Server to 
    Root is where all the files on the system are mounted and where everything stems from.
  * /dev
    The devices directory is where devices are mounted as special files.
-
   
-
 * DHCP
   * DHCP is important for how we operate with networking
   * Dynamic Host Configuration Protocol
@@ -211,9 +210,62 @@ After the installation for Domain Services is set, we can promote the Server to 
        * If more than one are offered, the client will pick the first one it recieves
     3. DHCPRequest: The client who got the offer will then confirm that it will take the offered IP address
     4. DHCPACK: The server will send the IP address, the subnet mask, gateway, and DHCP server to the client.
+    DORA lol
   * The server gives IP addresses on a "lease". If the IP address is not renewed within that period, the IP address will go back into the pool of available IP addresses
     * The server keeps track of all the IP addresses given out
   * The UDP ports that it operates on are 68 for the client and 67 for the server
   * Different settings and scenerios can change the process described here, but this is just a general overview
-      
-     
+  * DHCP feels like it is at Layer 3 but it actually runs at layer 7
+    * It is a service that gives a Layer 3 (and 2 kind of) address to clients
+    * SSH is a layer 7 application as well, for example
+  * When you log into a machine you don't have that IP yet, so it broadcasts to the network asking for an IP. The server responds with an IP in a Unicast. The machine then broadcasts a YES (DHCP Request) and then is ACKed the IP.
+    * Couldnt this result in a MITM attack?
+  * DHCP Scope: the range of IPs that the DHCP server can assign
+    * This could also be configured to be different rooms for example, so room A is 30-39 and room B is 40-49
+  * DHCP Release: will get rid of your current IP address back to the DHCP pool
+    * Your IP is now 0.0.0.0 or, in other words, nothing
+    * Windows commandline: ~ipconfig /release~
+    * What if you try this on a static network?
+  * DHCP uses UDP because DHCP is doing the confirmation so it doesn't need TCP
+
+* Setting up DHCP on Linux (Lab 4 Notes) 
+  * On the CentOS machine, we can simply install DHCP using ~yum~
+    ~sudo yum install dhcp~
+  * We can configure dhcp in the ~/etc/dhcp/dhcp.conf~ file
+    * Here is where we'll configure our router (or firewall in this case), subnet mask, the domain name, and the range (or pool)
+  * We want to restart the service whenever we change the config
+  * We'll start the service and enable it at boot with the following:
+  #+BEGIN_SRC bash
+    systemctl start dhcpd
+    systemctl enable dhcpd
+  #+END_SRC
+  * The default on CentOS is to enable the firewall and allow incoming ICMP and SSH requests. We'll need to enable and allow the dhcp ports through so the client will work
+  * ~firewall-cmd --list-all~ will show the current config of the firewall, but as of right now, the dhcpv6-client is only enabled temporarily.
+  * To enable the ports permanently, we'll do the following:
+  #+BEGIN_SRC bash
+    firewall-cmd --add-service=dhcp --permanent 
+    firewall-cmd --reload
+  #+END_SRC
+** Configuring Windows 10 DHCP Client
+   * This is as simple as changing the network card to use dynamic instead of static
+** Changing Lease Length for a DHCP lease
+   * By default, it seems our DHCP lease lasts about 12 hours. We'll want to change this to something else depending on use case. In our case, we'll change it to just an hour.
+   * The config for ~dhcpd~ is found in ~/etc/~ as all configs are. We'll add the following line to the config in our subnet section:
+    #+BEGIN_SRC 
+      default-lease-time 3600; #1 hour
+    #+END_SRC
+   * Restart the service
+   * Release and renew on the workstation. Confirm that it worked with ~ipconfig /all~. Should show the new lease time.
+   
+** Accidently setting up DHCP on AD fix
+   So, you set up DHCP on AD? This will result in a lease being created for the first IP in our pool, even if we try and DHCPRelease on the machine. Our workstation will get the next IP in the pool which is not what the lab asks for. Here are the steps to fix it: 
+   1. Run ~ipconfig /release~ on both wks01 and ad01 given you set up DHCP on both.
+   2. Reconfigure ad01 to use static
+   3. The leases for dhcp are stored in ~/var/lib/dhcp~. There are three files here, ~dhcp6.leases~, ~dhcp.leases~ and ~dhcp.leases~~. All of these need to be wiped. Run the following:
+   #+BEGIN_SRC bash
+     > dhcp6.leases
+     > dhcp.leases
+     > dhcp.leases~
+   #+END_SRC
+   4. Run ~ipconfig /renew~ as an administrator on wks01. This will create a new lease for wks01 for our desired IP.
+   
