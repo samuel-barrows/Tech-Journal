@@ -227,6 +227,10 @@ After the installation for Domain Services is set, we can promote the Server to 
     * Windows commandline: ~ipconfig /release~
     * What if you try this on a static network?
   * DHCP uses UDP because DHCP is doing the confirmation so it doesn't need TCP
+** Additional DHCP Items
+   * DHCPNak: Means the opposite of ACK. It is a negative acknowledgement. This could occur for a few reasons, either the DHCP server finds that the IP is not available or it might come from a second DHCP server on the network that saw a request it wasn't intended to recieve and it denies it. This could also happen if a client moves subnets, for example.
+   * DHCPDecline: This message occurs when the client decides that the TCP/IP config is set up improperly or that the given parameters are invalid. This will go from client to server, and the client will restart the leasing process over again.
+   * DHCPInform: This is a client to server message that asks for local configuration. The client will already have an external address set up o use. 
 
 * Setting up DHCP on Linux (Lab 4 Notes) 
   * On the CentOS machine, we can simply install DHCP using ~yum~
