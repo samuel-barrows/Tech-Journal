@@ -189,12 +189,12 @@ After the installation for Domain Services is set, we can promote the Server to 
    Root is where all the files on the system are mounted and where everything stems from.
  * /dev
    The devices directory is where devices are mounted as special files.
-
 ** Securing SSH
    To secure SSH a little more than how it's set up by default, we'll disable any system accounts from being able to log in via ssh.
    * Open up ~/etc/ssh/sshd_config~ in a text editor and uncomment the line ~PreventRootLogin~ and set it to ~PreventRootLogin no~
    * Restart the ~sshd~ daemon
    Now the root user, and any user with a uid under 1000, will not be able to login via ssh.
+   
 * DHCP
   * DHCP is important for how we operate with networking
   * Dynamic Host Configuration Protocol
