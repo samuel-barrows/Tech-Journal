@@ -321,3 +321,18 @@
     * Instead of broadcasting their table every 30 seconds, it will only send "keep-alive" messages and then send only the change to their table.
     * OSPF is an example. Sends out Link State Advertisements which includes the change to the routing table
        
+* Subnetting
+  * IP address are a string of bits that are displayed in dotted decimal notation
+    * 8 bit octets where each bit represents a power of two. Basic binary here
+  * Network ID will come first and then the Host ID. These are determined based on the subnet
+  * Subnet mask has the same number of bits as the IP address. When an octet is 255 in the subnet, that represents part of the network ID, though sometimes, (like in /23) a host id and network id can bleed into each other
+  * we don't really want a lot of machines on the same network as this slows down the network, other machines, and creates a potential security concern when any machine can contact any other machine
+  * We can create different networks by subnetting. We'll take some bits from the host ID and convert them to subnet IDs. While this creates less hosts available, it does what we want it to do.
+  * Start with how many hosts you need to support
+  * When you are making a few subnets, you'll want to create the larger ones first. This will make it easier to subnet
+  * 2^n - 2 will determine the hosts where /n/ is number of host bits
+  * Classless routing allows all 0s and all 1s in a subnet ID to be ok
+    * Classful routing prevents this because we only have certain subnet classes
+  * If I wanted to configure a subnet on a network with DHCP, will I have to reconfigure DHCP or have multiple DHCP servers?
+    * A single DHCP server can handle multiple subnets, you just need it to be configured to pull from multiple pools
+  * If DHCP isn't working, you might get a /Link-Local/ Host Only address which is in the range of 169.254.0.0/16
