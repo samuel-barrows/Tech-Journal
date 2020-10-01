@@ -173,8 +173,6 @@ After the installation for Domain Services is set, we can promote the Server to 
   * Giving the user sudo permissions is easy enough and can be done by assigning the user to the ~wheel~ group.
   * ~history~ can be used to display your history. You can also view this in the hidden file of ~.bash_history~ in your home directory.
     * ~history -c~ can also clear your history
-  * A service in linux is called a daemon and services will generally have a 'd' at the end of a service name
-    * ~httpd~ is a daemon
 ** Command Log:
    * ~userdel~ can be used to delete a user
    * ~umask~ can be used to change the default permissions for a user. This is not persistant though and will need to be added to a config for future persistance.
@@ -191,7 +189,12 @@ After the installation for Domain Services is set, we can promote the Server to 
    Root is where all the files on the system are mounted and where everything stems from.
  * /dev
    The devices directory is where devices are mounted as special files.
-  
+
+** Securing SSH
+   To secure SSH a little more than how it's set up by default, we'll disable any system accounts from being able to log in via ssh.
+   * Open up ~/etc/ssh/sshd_config~ in a text editor and uncomment the line ~PreventRootLogin~ and set it to ~PreventRootLogin no~
+   * Restart the ~sshd~ daemon
+   Now the root user, and any user with a uid under 1000, will not be able to login via ssh.
 * DHCP
   * DHCP is important for how we operate with networking
   * Dynamic Host Configuration Protocol
@@ -210,7 +213,6 @@ After the installation for Domain Services is set, we can promote the Server to 
        * If more than one are offered, the client will pick the first one it recieves
     3. DHCPRequest: The client who got the offer will then confirm that it will take the offered IP address
     4. DHCPACK: The server will send the IP address, the subnet mask, gateway, and DHCP server to the client.
-    DORA lol
   * The server gives IP addresses on a "lease". If the IP address is not renewed within that period, the IP address will go back into the pool of available IP addresses
     * The server keeps track of all the IP addresses given out
   * The UDP ports that it operates on are 68 for the client and 67 for the server
@@ -272,4 +274,6 @@ After the installation for Domain Services is set, we can promote the Server to 
      > dhcp.leases~
    #+END_SRC
    4. Run ~ipconfig /renew~ as an administrator on wks01. This will create a new lease for wks01 for our desired IP.
-   
+
+      
+     
