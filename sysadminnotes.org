@@ -104,6 +104,37 @@ This all takes a really fast time
   * When you are on a domain, the credentials are stored on the AD which is more secure than local machines
   * DNS comes with AD. You cannot have one without the other in a Domain Controller promoted server.
   * Don't manually add entries to "Computers" as AD will do this for us when a computer has joined the Domain.
+** ADDS and Group Policy
+  * Microsoft Active Directory is able to manage individual computers, domains, servers, users. It does a lot
+  * Schema:
+    * Active Directory's API (kind of) and structure. It provides the default structure for what AD shows by default. You can modify it
+    * The strings over the puppet
+    * Allows you to fine tune objects
+  * Domain Controllers: DC is not just a normal server, instead it controls the whole domain
+  * OU: Originizational Unit. The "folders" in AD. Gives AD structure.
+    * The difference between this and a folder is that an OU can have group policy while a folder is just a visual que and nothing is effecting that object
+  * SID: Security Identifier. Objects have unique IDs that the DC reads.
+    * Every DC by default has an Administrator SID of -500 by default
+    * For this reason, we'll want to create the domain accounts and disable the default Admistrator accounts
+    * There is a pattern as well, similar to linux. User accounts have a certain range, program accounts have a certain range
+    * You can change the default SID, and it should be for security purposes
+  * Group Policy:
+    * Group Policy Objects (GPOs) basically set settings for the domain and on OUs
+    * How we're able to login with the same creds accross campus because they are all configured in GPOs.
+    * Password policy is set here, default shares, all set through Group Policy
+    * Group Policy read with these steps
+      * Domain -> OU -> Sub Ou
+      * We can set the policies on the Domain and the scope will be the whole domain. You can do the same thing with the OU and the following Sub OU.
+    * Only Windows Pro versions can support group policy
+      * Home editions don't support joining domains
+    * Group Policy can also be done on users. Users and computers are similar objects in this way
+      * Computer settings are applied before logon, user is applied after logon.
+    * Policy is mandatory, prefrences can be changed but are default.
+  * Changes to user settings needs a logout, while a computer needs a restart in order to apply
+  * Scope is important
+  * Liscensing can also be set in Group Policy
+  * Functionally easy, can get complicated really fast if oranized poorly.
+  * AD is the enterprise for goodness sake - Joe Eastman 10/02/20
 * Server 2019 Configuration (Lab 2 Notes)
   * For our purposes, use all the default settings except skip over the product key if prompted and set an admin password.
   * Open up server manager and configure the local network so that it interfaces with our FW
@@ -189,12 +220,12 @@ After the installation for Domain Services is set, we can promote the Server to 
    Root is where all the files on the system are mounted and where everything stems from.
  * /dev
    The devices directory is where devices are mounted as special files.
+
 ** Securing SSH
    To secure SSH a little more than how it's set up by default, we'll disable any system accounts from being able to log in via ssh.
    * Open up ~/etc/ssh/sshd_config~ in a text editor and uncomment the line ~PreventRootLogin~ and set it to ~PreventRootLogin no~
    * Restart the ~sshd~ daemon
    Now the root user, and any user with a uid under 1000, will not be able to login via ssh.
-   
 * DHCP
   * DHCP is important for how we operate with networking
   * Dynamic Host Configuration Protocol
@@ -277,3 +308,21 @@ After the installation for Domain Services is set, we can promote the Server to 
 
       
      
+* Settup up group policy (Lab Notes)
+  * Open up our AD server, and open up AD.
+  * Right click on the domain OU and make a new OU called whatever
+  * Make three OUs including Accounts, Computers, Groups
+  * Under Accounts, you can create accounts the same way
+  * We can move our WKS01 into our new OU called Computers
+  * Under Groups, we can make a group called "custom-desktop" and add our users that we want
+    * When naming groups, we'll want to name them something descriptive so we know what each group does.
+  * Now on to group policy. In our server manager, we can click Tools in the top right and go to Group Policy Management
+    * This window will not show contents of an OU, rather the settings we can apply to them
+  * To create a new user policy, we'll right click our OU and click the first part and name it something descriptive
+    * In the case of this policy, any User in the OU will have it applied, while we only want the group "custom-desktop" we made to be applied
+    * Clicking on the GP, we'll see security filtering. Here we can add the group we want it to apply to. We'll also remove the Authenticated Users filter.
+    * We'll also want to add our Domain Computers here
+  * In the delegation tab, we'll Deny the Apply Group Policy option when we click on our Group Policy
+  * We are now ready to define what it does exactly. Right click on the GP and click edit to see the group policy editor
+  * Here we can apply certain settings to the group policy and it will take effect depending on when a user logs out or a computer is restarted (depends on where the policy is set)
+  * Under Policies -> Admistrative Templates -> Desktop -> Desktop, we can Remove the recycling bin. We can do a whole lot of stuff, but for this lab, we are doing this.
