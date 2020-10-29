@@ -38,7 +38,7 @@
      * To do this enter Settings -> System -> About -> Rename this PC
      * Restart
   2. [X] Make a local admin
-     * Open control panel and go into User Accounts. 
+     * Open control panel and go into User Accounts . 
      * Manage another account and create a new account.
      * Add someone else to the PC and name them whatever.
      * Make the user an admin
@@ -177,7 +177,6 @@ After the installation for Domain Services is set, we can promote the Server to 
     * Here we can right open our domain, right click Users, and add a new user.
   * The admin name should have the suffix ~-adm~
   * Add a user to a group by simply right clicking them and adding them to a group
-
 * Joining a windows machine to a domain
   * Change the machine's DNS to the DNS of our DC
     * This is important
@@ -274,7 +273,7 @@ After the installation for Domain Services is set, we can promote the Server to 
   * We'll start the service and enable it at boot with the following:
   #+BEGIN_SRC bash
     systemctl start dhcpd
-    systemctl enable dhcpd
+    systemctl enable dhcpd 
   #+END_SRC
   * The default on CentOS is to enable the firewall and allow incoming ICMP and SSH requests. We'll need to enable and allow the dhcp ports through so the client will work
   * ~firewall-cmd --list-all~ will show the current config of the firewall, but as of right now, the dhcpv6-client is only enabled temporarily.
@@ -306,9 +305,7 @@ After the installation for Domain Services is set, we can promote the Server to 
    #+END_SRC
    4. Run ~ipconfig /renew~ as an administrator on wks01. This will create a new lease for wks01 for our desired IP.
 
-      
-     
-* Settup up group policy (Lab Notes)
+* Set up group policy (Lab Notes)
   * Open up our AD server, and open up AD.
   * Right click on the domain OU and make a new OU called whatever
   * Make three OUs including Accounts, Computers, Groups
@@ -326,3 +323,37 @@ After the installation for Domain Services is set, we can promote the Server to 
   * We are now ready to define what it does exactly. Right click on the GP and click edit to see the group policy editor
   * Here we can apply certain settings to the group policy and it will take effect depending on when a user logs out or a computer is restarted (depends on where the policy is set)
   * Under Policies -> Admistrative Templates -> Desktop -> Desktop, we can Remove the recycling bin. We can do a whole lot of stuff, but for this lab, we are doing this.
+
+* Windows Server Core
+  * Smaller server footprint, fewer resources, less code, all CLI
+  * Core introduced remote management, allowing you to manage a core server with our AD server. The gui doesn't have to be on the server itself
+  * Cyber has two AD servers for redundancy and to almost gurantee service uptime
+    * If the Domain controller goes down, that sucks, so we want more than one so that we can keep our enterprise operational
+    * A couple of the DCs are virtualized, but some are bare metal.
+  * UNC - Universal Naming Convention
+    * Way to get to fileshares on file servers through a remote login
+    * You login on shared permissions, meaning you can't do everything on the machine as you can locally
+      * This makes sense because we only really need to get to shared files
+      * We want to manage the remote perms differently than the local ones
+      * Shared perms should be least priv
+
+* Installing DHCP on Server Core
+  * Installing DHCP on server core can be done through AD with some command line bits
+  * Go to manage and add the DHCP Server to the FS server.
+  * We'll then promote the server
+  * After, we'll need to configure the scope and IPs. Go to the FS server and launch powershell
+  * We need a few things. We need the DNS and gateway to give to clients. We can do that with a few powershell commands. Make changes according to the need of the network
+  * (stolen from https://docs.microsoft.com/en-us/windows-server/networking/technologies/dhcp/dhcp-deploy-wps)
+  #+BEGIN_SRC powershell
+  Set-DhcpServerv4DnsSetting -ComputerName "DHCP1.corp.contoso.com" -DynamicUpdates "Always" -DeleteDnsRRonLeaseExpiry $True
+  Set-DhcpServerDnsCredential -Credential Get-Credential -ComputerName "DHCP1.corp.contoso.com"
+  #+END_SRC 
+  * We'll enter the following according to our needs (stolen from https://docs.microsoft.com/en-us/windows-server/networking/technologies/dhcp/dhcp-deploy-wps)
+  #+BEGIN_SRC powershell
+  Add-DhcpServerv4Scope -name "Corpnet" -StartRange 10.0.0.1 -EndRange 10.0.0.254 -SubnetMask 255.255.255.0 -State Active
+  Add-DhcpServerv4ExclusionRange -ScopeID 10.0.0.0 -StartRange 10.0.0.1 -EndRange 10.0.0.15
+  Set-DhcpServerv4OptionValue -OptionID 3 -Value 10.0.0.1 -ScopeID 10.0.0.0 -ComputerName DHCP1.corp.contoso.com
+  Set-DhcpServerv4OptionValue -DnsDomain corp.contoso.com -DnsServer 10.0.0.2
+  #+END_SRC
+  And we're good!
+
