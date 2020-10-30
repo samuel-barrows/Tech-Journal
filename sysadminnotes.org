@@ -357,3 +357,20 @@ After the installation for Domain Services is set, we can promote the Server to 
   #+END_SRC
   And we're good!
 
+
+* Installing Apache on Linux
+  * Installing Apache isn't too hard on linux
+  * ~sudo yum install httpd~
+    * This will install apache2 to the machine
+  * ~sudo firewall-cmd --permanent --add-service=http~
+  * ~sudo systemctl restart httpd~
+    * This will allow the apache server through the firewall
+  * We'll also want to give the /var/www/html/ directory to the www-data user
+  
+* Joining a Linux machine to the Domain
+  * To join the linux machine to the domain, we'll install the following`
+    * realmd, samba, samba-common, oddjob oddjob-mkhomedir sssh
+  * With this, we can join the machine to the domain with the following command:
+    * realm join --user=your-domain-admin-username@yourdomain.local yourdomain.local
+    * realm list
+  * Now you can login with a domain account
