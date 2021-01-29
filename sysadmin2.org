@@ -1,0 +1,51 @@
+#+TITLE: SYS-265
+#+AUTHOR:
+
+* Installing AD on Server Core
+   * In powershell, we can isntall AD quite easily
+     #+BEGIN_SRC powershell
+
+     Install-WindowsFeature AD-Domain-Services -IncludeManagementTools
+
+     #+END_SRC
+   * This allows to simply install AD onto our server core. Now we can make a forest
+     #+BEGIN_SRC powershell
+
+     Install-ADDSForest -DomainName sam.local
+
+     #+END_SRC
+   * After reading through the install prompts, the machine will restart and apply the settings
+   * Now we can make a new AD user if we wanted to. Though, for the purposes of this lab, we're doing it via mgmt01
+     #+BEGIN_SRC powershell
+
+     New-ADUser -SamAccountName sam-adm -AccountPassword(Read-Host -AsSecureString "Input Password") -Enabled $true
+     #This will make a new account with account name sam-adm and password as whatever the user enters
+     
+     #+END_SRC
+   * We can now join wks01 to the domain
+     * Change the DNS of wks01 to AD01. We're going to install our DNS on AD01, so this is future proofing
+     * We can join the machine to the domain with the administrator account. This should be changed
+     * Restart
+     * Login as administrator@sam.local
+
+   Sources Found:
+   https://blog.netwrix.com/2018/06/07/how-to-create-new-active-directory-users-with-powershell/
+
+* Managing AD from a management server
+  * After setting up the management server and joining/logging it into
+    the domain, we'll install the following tools on it:
+    * Remote Server Admin Tools
+    * DHCP Server Tools
+    * DNS Server Tools
+    * File Services Tools
+      
+    These will allows us to manage our AD01 machine from the management server
+  
+  * We'll now add ad01 to our list of managed servers
+    * We do it as follows:
+      * Manage, Add Servers, Search for AD01, Move it over, OK
+  * Through here, we'll make our users and DNS 
+    * We need an A record for fw01 and a Reverse Lookup Zone
+      
+  Sources Found: 
+  https://docs.microsoft.com/en-us/windows-server/administration/server-manager/add-servers-to-server-manager#BKMK_add
