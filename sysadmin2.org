@@ -44,8 +44,101 @@
   * We'll now add ad01 to our list of managed servers
     * We do it as follows:
       * Manage, Add Servers, Search for AD01, Move it over, OK
+	* We may need to do this periodically cause it may disappear from our server list
   * Through here, we'll make our users and DNS 
     * We need an A record for fw01 and a Reverse Lookup Zone
       
   Sources Found: 
   https://docs.microsoft.com/en-us/windows-server/administration/server-manager/add-servers-to-server-manager#BKMK_add
+* Network Management
+  * implies activly managaging resources connected to your network
+  * proactive in contrast to reactive
+** SNMP
+   * Simple Network Management Protocol
+   * least common denominator for network management
+   * sent across networks that are public and sends text in clear text
+   * Three Components
+     * managed device
+     * SNMP service/agnet
+     * Network Management System
+   * Managed Information Base (MIB)
+     * list of object identifiers (OIDs)
+     * SNMP compliant systems map OIDs to system parameters such that
+       someone can query the system location oid on any device and get
+       data in return
+   * SNMP listens on 161/UDP when enabled
+   * pfSense supports SNMP
+   * Traps:
+     * a device will send out an SNMP Trap for a faster/proactive
+       response on 162/UDP
+** Examples
+   * Grafana is an example for this.
+     * https://grafana.com/
+   * Solarwinds
+     * Lol
+   * MangeEngine
+     * https://www.manageengine.com/network-monitoring/
+   * Logstash SNMP input plugin
+     * https://www.elastic.co/guide/en/logstash/current/plugins-inputs-snmp.html
+** Questions/Research
+   * SNMP is an application layer protocol and is the most popular and
+     accepted mangement and monitoring elements
+* SNMP Install/Setup
+** PfSense SNMP
+  * Setting up SNMP on pfsense can be done through the browser
+  * Log into the admin panel, go to Services -> SNMP
+  * We'll need to configure the location, contact, and community string
+    * Community string is important because we want it to be unique for us
+      so that others can grab onto it.
+  * Bind it to LAN
+  * Save
+  * Restart with the curvy arrow at the top
+** Nmon01 Setup
+  * We need to setup an SNMP client on nmon 
+  * After doing the normal setup and making a DNS entry,
+    We'll install ~net-snmp-utils~ on it
+  * And we're done for now 
+** SNMPD (SNMP Server) and Clients
+  * We'll install ~net-snmp-utils~ as well as ~net-snmp~ 
+  * configure the ~/etc/snmpd/snmpd.conf~ file to reflect
+    the below
+    #+BEGIN_SRC conf
+      com2sec myNetwork 10.0.5.0/24 SYS265-sam
+      group myROGroup v2c myNetwork
+      view all included .1 80
+      access myROGroup "" any no auth exact all none none
+    #+END_SRC
+  * enable and restart the service (check status too)
+  * Allow the port 161 through the firewall or the service
+    * ~firewall-cmd --zone=public --add-service=snmp~
+  * web01 should now show up on nmon01 when checking for that
+    server with snmpwalk
+** Installing SNMP on AD01
+  * Through MGMT, we can install the SNMP Feature through the following 
+    * Manage->Add Roles and Featues->Features->SNMP Service
+    * (Select AD01 in Server Selection)
+** Installing SNMP Tools on MGMT01
+  * As with AD01, we go to Add Tools-> Features->Remote Server Tools
+    -> SMTP Tools
+** SNMP Service Security Props on AD01
+   * Through computer management -> Services -> Services -> SNMP
+     Service props, we'll change the community string and limit
+     queries to only nmon01
+   * This is done on the security tab
+   * Restart the service
+   * Query with the following on nmon01 for ad
+     #+BEGIN_SRC bash
+       snmpwalk -Os -c SYS265-sam -v2c ad01-sam.sam.local system
+     #+END_SRC
+*** Enabling Remote Management on AD01
+  * Going to computer management to enable this will fail to fix, we
+    need to start a remote powershell session with the machine.
+    #+BEGIN_SRC powershell
+      #connect
+      Enter-PSSession AD01-sam.sam.local
+      # we also need change the firewall rules
+      Set-NetFirewallRule -DisplayGroup "Remote Event Log Management" -Enabled True
+    #+END_SRC
+  * Now we can right click on AD01 and start computer management 
+    
+
