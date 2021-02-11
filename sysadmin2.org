@@ -141,4 +141,33 @@
     #+END_SRC
   * Now we can right click on AD01 and start computer management 
     
-
+* Grafana Install
+  * With CentOS, we can download and install with the following commands
+    #+BEGIN_SRC bash
+    wget https://dl.grafana.com/oss/release/grafana-7.4.0-1.x86_64.rpm
+    sudo yum install grafana-7.4.0-1.x86_64.rpm
+    sudo yum install initscripts urw-fonts
+    #+END_SRC 
+  * From here we can enable grafana and start the service 
+  * We also need to allow port 3000 through the firewall with the following command
+    #+BEGIN_SRC bash
+    sudo firewall-cmd --permanent --add-port=3000/tcp
+    sudo systemctl restart firewalld
+    #+END_SRC 
+  * Now we can go to our workstation and access the panel by going to
+    nmon on port 3000 and logging in with admin and admin
+    * We'll make a new password after this
+  * In order to get logs to Grafana, we can use telegraf and influxDB on nmon01
+  * https://portal.influxdata.com/downloads/
+  * After downloading and installing, we need to get a sql server
+    (mariadb) and setup a basic database for grafana to use.
+  * 
+* DHCP Setup on AD01
+  * Open up mgmt01 and got to manage -> Add new Roles/Features
+  * Here we just need to install DHCP on AD01
+  * After, DHCP should show up on the left. 
+  * Now, we can right click on AD01 in the DHCP menu and go to DHCP
+    manager.
+  * Here, we can right click on AD01 again and add a new scope.
+  * After we enter all the information about our scope, we can exit
+    the wizard and enable automatic IP retrival on our Window's boxes.
