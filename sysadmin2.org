@@ -171,3 +171,25 @@
   * Here, we can right click on AD01 again and add a new scope.
   * After we enter all the information about our scope, we can exit
     the wizard and enable automatic IP retrival on our Window's boxes.
+* AWS Notes
+  * Setting up a few instances can be done in the EC2 service on AWS.
+  * Go to launch instance and select the operating system that we want
+    to run
+  * Change any settings that you may need in the setup, but most of it
+    is just default except for maybe our security group and storage
+    size depending on your needs for this instance
+  * We'll make our key for our connection. This is a symmetric key, so
+    it is our only way in and out. Don't lose it!
+  * We can then ssh in (in the case of a linux instance) with the following
+    #+BEGIN_SRC bash
+    ssh -i "KEY FILE" IPOFINSTANCE
+    #+END_SRC
+  * In the case of a windows machine, we can do the same with RDP, we
+    just need to decrypt the Administrator password so we can ssh
+    in. This can be done with the same key that we sshed in with,
+    given that we didnt make a seperate one for this instance
+  * RDP and SSH will also need to be let through the firewall in an
+    inbound rule. This is true for any other services/ports we need to
+    access publically.
+  * AWS firewall is very strict, nothing is open by default. This can
+    be done in our security group
