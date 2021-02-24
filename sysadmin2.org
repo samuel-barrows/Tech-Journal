@@ -193,3 +193,9 @@
     access publically.
   * AWS firewall is very strict, nothing is open by default. This can
     be done in our security group
+** Reflective Aspect
+   I have used EC2 and AWS in the past, so this lab was not that
+   complicated for me. What I had the most difficulty with was
+   attempting to RDP from my linux machine with Remmina. For whatever
+   reason, it simply refused to connect. I had to go onto my Windows
+   laptop where I could RDP just fine.
