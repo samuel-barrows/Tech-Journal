@@ -199,3 +199,51 @@
    attempting to RDP from my linux machine with Remmina. For whatever
    reason, it simply refused to connect. I had to go onto my Windows
    laptop where I could RDP just fine.
+* Docker
+  * Docker is an open source conainerization solution. 
+    * retro term for this is a BSD Jails
+    * where jailbreaking comes from
+  * a container uses the same kernel as the source OS, so we can run
+    more containerized apps than virtualized
+  * you can build, run, and ship anywhere with the same kernel
+** Ubuntu Setup
+   Ubuntu is a litle bit different for setting up our static IPs. We
+   can do this in netplan by setting up a file for our network in a
+   yaml file
+#+BEGIN_SRC yaml
+network:
+  ethernets:
+    ens160:
+      dhcp4: no
+      addresses:
+      - STATIC_IP/CIDR
+    gateway4: GATEWAY
+    nameservers:
+      addresses: [NS]
+version: 2
+#+END_SRC
+
+** Docker Setup
+   Install Docker:
+   #+BEGIN_SRC bash
+     sudo apt install apt-transport-https ca-certificates curl software-properties-common;
+     
+     curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -;
+     sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable
+     sudo apt update
+     sudo apt-cache policy docker-ce
+     sudo apt install docker-ce
+   #+END_SRC
+   
+   The script aobe will install docker.
+   
+   Set up our user for the docker group so we don't need to use sudo
+   for everything with the following
+   #+BEGIN_SRC bash
+   sudo usermod -aG docker USER
+   #+END_SRC
+   
+   Docker is now set up and able to run.
+
+
+
