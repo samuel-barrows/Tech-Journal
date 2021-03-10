@@ -1,0 +1,26 @@
+version: '2.1'
+
+services:
+  ngircd:
+    image: ghcr.io/linuxserver/ngircd
+    container_name: ngircd
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/New_York
+    volumes:
+      - /home/sam-adm/irc:/config
+    ports: 
+      - 6669:6669
+    restart: unless-stopped
+
+  thelounge:
+    image: thelounge/thelounge
+    container_name: thelounge
+    ports:
+      - "9000:9000"
+    restart: always
+    volumes:
+      - ~/irc:/var/opt/thelounge
+
+
