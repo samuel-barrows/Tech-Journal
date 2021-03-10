@@ -246,4 +246,11 @@ version: 2
    Docker is now set up and able to run.
 
 
-
+* Git and Bash
+  * Github is a tool used for version control and can be used for
+    project managment. I used git to push my script and docker configs
+    up to a my repo.
+  * The script was written to create a user based on user input and
+    allow them passwordless ssh access to docker01. Copying the public
+    key to the repo, it can be pulled and put into the authorized key
+    file on the new user, allowing them to ssh in without a password.
