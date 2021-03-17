@@ -245,7 +245,6 @@ version: 2
    
    Docker is now set up and able to run.
 
-
 * Git and Bash
   * Github is a tool used for version control and can be used for
     project managment. I used git to push my script and docker configs
@@ -254,3 +253,20 @@ version: 2
     allow them passwordless ssh access to docker01. Copying the public
     key to the repo, it can be pulled and put into the authorized key
     file on the new user, allowing them to ssh in without a password.
+* Ansible
+  Ansible is an automation tool running over ssh to run commands on
+  remote machines. This is increadibly useful across a distributed
+  network for getting multiple machines up at the same time. To work,
+  we need a controller machine and machines to control. If machines
+  have the same accounts with the same passwords and ssh keys, then
+  the controller machine can control any machine that is pointed at
+  it. 
+
+** Some Commands
+   * ~ansible-galaxy~: This is similar to docker's hub, there are
+     scripts and pacakages to be run through ansible on multiple
+     machines.
+
+   * ~ansible-playbook~: takes the inventory of machines and the
+     "playbook" which is a yml file. The playbook has details and
+     tasks to be run by ansible to get a package over to the machines.
