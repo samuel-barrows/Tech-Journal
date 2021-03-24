@@ -270,3 +270,60 @@ version: 2
    * ~ansible-playbook~: takes the inventory of machines and the
      "playbook" which is a yml file. The playbook has details and
      tasks to be run by ansible to get a package over to the machines.
+* CentOS8
+** nmcli
+   nmcli is the command line way to interact with Network
+   Manager. This can be used in scripts as well as interactively.
+   To get the list of devices, we can run ~nmcli connection show~.
+   
+   Now that we have the devices we can modify, the following commands
+   will configure it  
+   #+BEGIN_SRC bash
+   #keep in mind, you need to be sudo to run these commands
+   #this will change the IP for the device
+   nmcli con mod DEVICE ipv4.addresses IP/CIDR
+
+   #this will set the gateway
+   nmcli con mod DEVICE ipv4.gateway GATEWAY
+
+   #DNS
+   nmcli con mod DEVICE ipv4.dns DNSSERVER
+   
+   #setup manual addressing
+   nmcli con mod DEVICE ipv4.method manual
+   
+   #this will save the settings and reset the device
+   nmcli con up DEVICE
+   #+END_SRC
+   
+** Cockpit
+   Cockpit is a web-interface for our machine. We can do most
+   administrative tasks for the machine through this gui. 
+*** Add to Domain
+    On the Overview section of the web interface, on the far right is
+    a section for ~Join Domain~. Clicking into this menu, we can add
+    the details for joining the domain with ~Computer OU~ left
+    blank. Clicking Join will join us to the domain.
+    
+*** Adding Domain Admins to sudoers
+    Going over to ~Terminal~ as a sudo user, edit the ~/etc/sudoers~
+    file and add the following line under ~%wheel~
+    #+BEGIN_SRC conf
+    "%domain admins@DOMAIN" ALL=(ALL) ALL
+    #+END_SRC
+    This will allow any domain admin account to be able to sudo.
+
+*** Adding Dashboard and Managing Other Machines
+    Dashboard is a seperate package named ~cockpit-dashboard~ that
+    should be installed on the machine that is manager machine. It
+    doesn't need to be installed else where. After running ~yum -y
+    install cockpit-dashboard~ and waiting a second, the Dashboard
+    tab will show up on the left under Hosts.
+    
+    Adding a machine to this dashboard is as simple as adding it with
+    the IP, but we need to make sure that cockpit is installed and
+    running on the other machine. We can't manage a machine without
+    Cockpit! Install the package with ~yum -y install cockpit~ on the
+    machine you want to manage. In Dashboard, we can simply press *+*
+    and then add the machine we want to manage with the IP. And we are
+    done!
