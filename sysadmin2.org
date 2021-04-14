@@ -327,3 +327,21 @@ version: 2
     machine you want to manage. In Dashboard, we can simply press *+*
     and then add the machine we want to manage with the IP. And we are
     done!
+* AD GPO
+  Active Directory GPOs can be managed from our server manager. In
+  order to deploy software via GPO, we'll make a new OU and place the
+  objects we want in there with the following commands:
+
+  #+BEGIN_SRC powershell
+  Get-ADUser username | Move-ADObject -TargetPath "OU=UNIT_TO_MOVE_TO,DC=DOMAIN_NAME,DC=local" -Verbose
+  Get-ADComputer computer_name | Move-ADObject -TargetPath "OU=UNIT_TO_MOVE_TO,DC=DOMAIN_NAME,DC=local" -Verbose
+  #+END_SRC
+  
+  From here, we'll install the group policy manager onto our
+  management machine and start to create our GPOs. Install the feature
+  from the Add roles and features menu.
+  
+  We'll need a file share to deploy our software from, which we can do
+  in the Server Manager. As long as the computer object has access to
+  the file share, we can deploy the software.
+  
